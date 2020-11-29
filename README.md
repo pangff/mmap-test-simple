@@ -88,3 +88,91 @@ docker ps
 ```
 curl http://localhost:3000
 ```
+
+## 使用VisualVM 监控java服务
+
+
+#### 安装visualVM
+
+* 下载地址： https://visualvm.github.io/index.html
+* 中文介绍：https://htmlpreview.github.io/?https://raw.githubusercontent.com/visualvm/visualvm.java.net.backup/master/www/zh_CN/intro.html
+ 
+ 
+#### clone项目切换到m2分支
+
+```
+git clone https://github.com/pangff/mmap-test-simple.git
+
+git fetch
+
+git checkout m2
+```
+
+#### build mmap服务 镜像并运行
+
+登录虚拟机
+```
+vagrant ssh mmap
+```
+
+编译项目，运行
+```
+cd /vagrant
+
+mvn package && java -jar target/*.jar
+```
+
+在虚拟机可以通过curl验证（返回hello world）
+
+```
+curl http://localhost:3000
+```
+
+```
+command+c 结束服务
+```
+
+build镜像
+
+```
+docker build --build-arg JAR_FILE=target/*.jar -HOSTNAME=java服务所在服务器IP -t  pffair/mmap-docker .
+```
+
+启动服务
+```
+docker run -p 3000:3000 -p 8888:8888 pffair/mmap-docker
+```
+
+查看容器运行情况
+```
+docker ps
+```
+
+在本地客户端机器测试
+
+```
+curl http://ServerHOST:3000
+```
+
+#### 客户端机器运行visualVM
+
+右键Remote菜单
+
+<img src= "https://github.com/pangff/mmap-test-simple/blob/m2/pic/p1.png" width="250" />
+
+点击Add Remote Host... 。 添加java服务host名称（vagrant ssh mmap 进入 mmap后 ifconfig查看）
+
+<img src= "https://github.com/pangff/mmap-test-simple/blob/m2/pic/p2.png" width="250" />
+
+右键点击添加的java服务host节点
+
+<img src= "https://github.com/pangff/mmap-test-simple/blob/m2/pic/p3.png" width="250" />
+
+添加JMX连接 Add JMX Connection...
+
+<img src= "https://github.com/pangff/mmap-test-simple/blob/m2/pic/p4.png" width="250" />
+
+配置端口 8888、选中Do not require SSL connection选项 点击OK 可以看到java服务监控信息
+
+<img src= "https://github.com/pangff/mmap-test-simple/blob/m2/pic/p5.png" width="250" />
+
