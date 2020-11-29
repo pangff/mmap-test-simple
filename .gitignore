@@ -33,6 +33,6 @@ target/
 build/
 logs/
 lib/
-pic/
+
 ### VS Code ###
 .vscode/
