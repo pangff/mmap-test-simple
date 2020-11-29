@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <property name="LOG_HOME" value="/data/xinhuahaox/logs"/>
+
+    <springProfile name="local">
+        <property name="LOG_HOME" value="logs"/>
+    </springProfile>
+
+    <springProfile name="dev">
+        <property name="LOG_HOME" value="/data/xinhuanet/xinhuahaox/logs"/>
+    </springProfile>
+
+    <springProfile name="pre">
+        <property name="LOG_HOME" value="/data/xinhuanet/xinhuahaox/logs"/>
+    </springProfile>
+
+    <springProfile name="prod">
+        <property name="LOG_HOME" value="/data/xinhuanet/xinhuahaox/logs"/>
+    </springProfile>
+
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>debug</level>
+        </filter>
+
+        <encoder>
+            <pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}]-[%t]-[%p]-[%c{20}] %m%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <appender name="debug-file"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${LOG_HOME}/xinhuahaox-debug.log</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_HOME}/xinhuahaox-debug-%d{yyyy-MM-dd}.log
+            </fileNamePattern>
+            <maxHistory>10</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}]-[%t]-[%p]-[%c{20}] %m%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>debug</level>
+        </filter>
+    </appender>
+
+
+    <appender name="error-file"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${LOG_HOME}/xinhuahaox-error.log</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_HOME}/xinhuahaox-error-%d{yyyy-MM-dd}.log
+            </fileNamePattern>
+            <maxHistory>10</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}]-[%t]-[%p]-[%c{20}] %m%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>error</level>
+        </filter>
+    </appender>
+
+    <!-- 指定项目中某个包，当有日志操作行为时的日志记录级别 -->
+    <!-- com.appley为根包，也就是只要是发生在这个根包下面的所有日志操作行为的权限都是DEBUG -->
+    <!-- 级别依次为【从高到低】：FATAL > ERROR > WARN > INFO > DEBUG > TRACE -->
+    <logger name="com.xinhuanet.xinhuahaox" level="debug" additivity="false">
+        <!-- <appender-ref ref="console" /> -->
+        <appender-ref ref="error-file"/>
+        <appender-ref ref="debug-file"/>
+    </logger>
+
+    <springProfile name="local">
+        <logger name="com.xinhuanet.xinhuahaox" level="debug" additivity="false">
+            <appender-ref ref="console"/>
+        </logger>
+    </springProfile>
+
+    <!-- LOG everything at ERROR level -->
+    <root level="debug">
+        <appender-ref ref="console"/>
+    </root>
+
+</configuration>
